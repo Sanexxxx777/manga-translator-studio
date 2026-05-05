@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 40" width="120" height="40">
+  <defs>
+    <linearGradient id="nfa-gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#d4a574"></stop>
+      <stop offset="100%" stop-color="#b08450"></stop>
+    </linearGradient>
+  </defs>
+  <rect x="0" y="2" width="36" height="36" rx="10" fill="url(#nfa-gold)"></rect>
+  <text x="18" y="25" text-anchor="middle" font-family="Geist, Inter, sans-serif" font-size="13" font-weight="800" fill="#0c0a08" letter-spacing="1.5">NFA</text>
+  <text x="46" y="19" font-family="Geist, Inter, sans-serif" font-size="14" font-weight="600" fill="#ede6db">Trading</text>
+  <text x="46" y="33" font-family="Geist, Inter, sans-serif" font-size="10" fill="#9a8e7d" letter-spacing="1.5">SUITE</text>
+</svg>

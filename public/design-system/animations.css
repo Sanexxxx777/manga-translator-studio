@@ -1,0 +1,218 @@
+/* NFA Trading Suite — Canonical Animations
+   Import:  <link rel="stylesheet" href="animations.css">
+   Depends on: colors_and_type.css (for --accent, --border, etc.)
+   Single easing token applies everywhere. */
+
+:root {
+  --ease-nfa: cubic-bezier(0.4, 0, 0.2, 1);
+  --dur-fast: 200ms;
+  --dur-med:  300ms;
+  --dur-slow: 500ms;
+}
+
+/* ============ 1. AMBIENT ORBS ============ */
+/* Large blurred circles drifting in the background for depth. */
+@keyframes nfa-float {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50%      { transform: translate3d(0, -10px, 0); }
+}
+@keyframes nfa-float-x {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50%      { transform: translate3d(14px, -10px, 0); }
+}
+.nfa-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  pointer-events: none;
+  opacity: 0.9;
+  animation: nfa-float 8s var(--ease-nfa) infinite;
+}
+.nfa-orb--lg { width: 600px; height: 600px; animation-duration: 14s; }
+.nfa-orb--md { width: 400px; height: 400px; animation-duration: 11s; animation-name: nfa-float-x; }
+.nfa-orb--sm { width: 300px; height: 300px; animation-duration: 9s; }
+.nfa-orb--accent        { background: rgba(212, 165, 116, 0.06); }
+.nfa-orb--accent-dark   { background: rgba(176, 132, 80, 0.05); }
+.nfa-orb--amber         { background: rgba(232, 180, 76, 0.03); }
+
+/* ============ 2. PULSE GLOW (status dots) ============ */
+/* Solid dot + outward pulse ring, 1.5s infinite. */
+@keyframes nfa-pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 currentColor, 0 0 12px 0 currentColor; }
+  50%      { box-shadow: 0 0 0 6px transparent,   0 0 4px 0 currentColor; }
+}
+@keyframes nfa-pulse-ring {
+  0%   { transform: scale(0.8); opacity: 0.9; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+.nfa-status-dot {
+  position: relative;
+  display: inline-block;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: currentColor;
+  animation: nfa-pulse-glow 1.5s var(--ease-nfa) infinite;
+}
+.nfa-status-dot::after {
+  content: "";
+  position: absolute; inset: 0;
+  border-radius: 50%;
+  background: currentColor;
+  animation: nfa-pulse-ring 1.5s var(--ease-nfa) infinite;
+}
+.nfa-status-dot--green  { color: #5dd9a3; }
+.nfa-status-dot--amber  { color: #e8b44c; }
+.nfa-status-dot--red    { color: #e87171; }
+.nfa-status-dot--cyan   { color: #6ac8db; }
+.nfa-status-dot--muted  { color: #5a4f42; animation: none; }
+.nfa-status-dot--muted::after { display: none; }
+
+/* ============ 3. CARD HOVER ============ */
+/* translateY(-2px) + enhanced shadow, 300ms. */
+.nfa-card-hover {
+  transition: transform var(--dur-med) var(--ease-nfa),
+              box-shadow var(--dur-med) var(--ease-nfa),
+              border-color var(--dur-med) var(--ease-nfa),
+              background-color var(--dur-med) var(--ease-nfa);
+  will-change: transform;
+}
+.nfa-card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55), 0 0 32px rgba(212, 165, 116, 0.14);
+  border-color: rgba(212, 165, 116, 0.25);
+  background-color: rgba(35, 28, 20, 0.7);
+}
+
+/* ============ 4. SIDEBAR COLLAPSE ============ */
+/* width 240px → 64px, 300ms. Plus fades + tab label slide. */
+.nfa-sidebar {
+  width: 240px;
+  transition: width var(--dur-med) var(--ease-nfa);
+  overflow: hidden;
+}
+.nfa-sidebar[data-collapsed="true"] { width: 64px; }
+.nfa-sidebar-label {
+  opacity: 1;
+  transform: translateX(0);
+  transition: opacity var(--dur-fast) var(--ease-nfa),
+              transform var(--dur-med) var(--ease-nfa);
+  white-space: nowrap;
+}
+.nfa-sidebar[data-collapsed="true"] .nfa-sidebar-label {
+  opacity: 0;
+  transform: translateX(-8px);
+  pointer-events: none;
+}
+
+/* ============ 5. TAB UNDERLINE ============ */
+/* Animated indicator sliding between tabs. */
+.nfa-tabs {
+  position: relative;
+  display: inline-flex;
+  gap: 2px;
+  border-bottom: 1px solid var(--border, rgba(180,140,80,0.12));
+}
+.nfa-tab {
+  position: relative;
+  padding: 12px 18px;
+  background: transparent; border: 0;
+  color: var(--fg2, #9a8e7d);
+  font: 500 13px/1 inherit;
+  cursor: pointer;
+  transition: color var(--dur-fast) var(--ease-nfa);
+}
+.nfa-tab:hover    { color: var(--fg1, #ede6db); }
+.nfa-tab.is-active { color: var(--accent, #d4a574); }
+.nfa-tabs-indicator {
+  position: absolute;
+  bottom: -1px; left: 0;
+  height: 2px;
+  background: var(--accent, #d4a574);
+  box-shadow: 0 0 12px rgba(212,165,116,0.4);
+  border-radius: 2px 2px 0 0;
+  transition: left var(--dur-med) var(--ease-nfa),
+              width var(--dur-med) var(--ease-nfa);
+  pointer-events: none;
+}
+
+/* ============ 6. FADE-IN ON MOUNT ============ */
+/* opacity 0→1 + translateY(10px→0), 500ms. Add class to children. */
+@keyframes nfa-fade-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.nfa-fade-in {
+  animation: nfa-fade-up var(--dur-slow) var(--ease-nfa) both;
+}
+.nfa-stagger > * { animation: nfa-fade-up var(--dur-slow) var(--ease-nfa) both; }
+.nfa-stagger > *:nth-child(1) { animation-delay: 0ms;   }
+.nfa-stagger > *:nth-child(2) { animation-delay: 60ms;  }
+.nfa-stagger > *:nth-child(3) { animation-delay: 120ms; }
+.nfa-stagger > *:nth-child(4) { animation-delay: 180ms; }
+.nfa-stagger > *:nth-child(5) { animation-delay: 240ms; }
+.nfa-stagger > *:nth-child(6) { animation-delay: 300ms; }
+.nfa-stagger > *:nth-child(7) { animation-delay: 360ms; }
+.nfa-stagger > *:nth-child(8) { animation-delay: 420ms; }
+
+/* ============ 7. GRADIENT SHIMMER (accent borders) ============ */
+/* Moving gradient sweeping across accent borders. */
+@keyframes nfa-shimmer-x {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+.nfa-shimmer-border {
+  position: relative;
+  border-radius: inherit;
+}
+.nfa-shimmer-border::before {
+  content: "";
+  position: absolute; inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(212,165,116,0.1)  0%,
+      rgba(212,165,116,0.5)  45%,
+      rgba(232,201,164,0.9) 50%,
+      rgba(212,165,116,0.5)  55%,
+      rgba(212,165,116,0.1) 100%
+    );
+  background-size: 200% 100%;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  animation: nfa-shimmer-x 3.5s var(--ease-nfa) infinite;
+  pointer-events: none;
+}
+
+/* Subtle loading shimmer (skeleton fill), same easing. */
+@keyframes nfa-shimmer-fill {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+.nfa-skeleton {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(40, 33, 24, 0.4) 25%,
+      rgba(212,165,116,0.08) 50%,
+      rgba(40, 33, 24, 0.4) 75%
+    );
+  background-size: 200% 100%;
+  animation: nfa-shimmer-fill 4s var(--ease-nfa) infinite;
+  border-radius: 6px;
+}
+
+/* Reduced-motion override */
+@media (prefers-reduced-motion: reduce) {
+  .nfa-orb,
+  .nfa-status-dot,
+  .nfa-status-dot::after,
+  .nfa-fade-in,
+  .nfa-stagger > *,
+  .nfa-shimmer-border::before,
+  .nfa-skeleton {
+    animation: none !important;
+  }
+  .nfa-card-hover:hover { transform: none; }
+}

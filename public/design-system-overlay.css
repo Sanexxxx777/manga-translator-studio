@@ -1,0 +1,144 @@
+/*
+  NFA Design System Overlay — applies Liquid Glass background, gradient Playfair titles,
+  Geist font to the existing crypto-dashboard without rewriting the layout.
+  Loaded AFTER styles.css to override selected visuals only.
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600;700&display=swap');
+
+/* ═══════════════════════════════════════════════════════════════
+   LIQUID GLASS background — diagonal warm→cool gradient
+   ═══════════════════════════════════════════════════════════════ */
+html, body {
+  background: #0a0a14 !important;
+  position: relative;
+  min-height: 100%;
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -2;
+  background: linear-gradient(
+    135deg,
+    #2a1d1a 0%,
+    #231a22 28%,
+    #1c1a2a 58%,
+    #151827 82%,
+    #121423 100%
+  );
+  filter: saturate(105%);
+  animation: nfa-blob-drift 60s ease-in-out infinite alternate;
+}
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  background:
+    radial-gradient(ellipse 140% 110% at 0% 100%, rgba(232, 149, 88, 0.18), transparent 55%),
+    linear-gradient(180deg, rgba(8, 8, 14, 0.35) 0%, transparent 28%),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.03 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  background-size: auto, auto, 180px 180px;
+}
+@keyframes nfa-blob-drift {
+  0%   { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(0.5%, -0.3%, 0); }
+}
+
+/* Neutralize the legacy solid/gradient bg set in styles.css */
+.app-container, main, .main-content {
+  background: transparent !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Font stack — Geist on everything
+   ═══════════════════════════════════════════════════════════════ */
+:root {
+  --nfa-font-sans:  'Geist', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --nfa-font-mono:  'Geist Mono', 'JetBrains Mono', monospace;
+  --nfa-font-serif: 'Playfair Display', Georgia, serif;
+}
+body, .app-container, input, button, select, textarea {
+  font-family: var(--nfa-font-sans);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Rainbow gradient page title (Playfair)
+   ═══════════════════════════════════════════════════════════════ */
+.sidebar .logo-text,
+.page-title,
+h1.main-title,
+.view-header h1,
+.view-header h2 {
+  font-family: var(--nfa-font-serif) !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.02em;
+  background: linear-gradient(
+    92deg,
+    #f5b486 0%,
+    #8fd4d0 28%,
+    #b4e28d 52%,
+    #c9a6e6 76%,
+    #f2a6c8 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Glass panels — soften existing cards
+   ═══════════════════════════════════════════════════════════════ */
+.card,
+.stat-card,
+.sector-card,
+.token-card,
+.panel,
+.sidebar,
+.modal-content,
+.ai-card,
+.signal-card {
+  background: rgba(255, 255, 255, 0.055) !important;
+  backdrop-filter: blur(24px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(160%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 20px 40px -12px rgba(0, 0, 0, 0.5),
+    0 2px 6px rgba(0, 0, 0, 0.2) !important;
+}
+.sidebar {
+  background: rgba(16, 16, 28, 0.42) !important;
+  backdrop-filter: blur(32px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(32px) saturate(160%) !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+.card:hover,
+.stat-card:hover,
+.sector-card:hover,
+.token-card:hover {
+  background: rgba(255, 255, 255, 0.085) !important;
+  border-color: rgba(255, 255, 255, 0.22) !important;
+}
+
+/* Numbers — always tabular */
+.stat-value, .stat-number, .price, .change,
+.mono, .num, [data-numeric], td.mono, .value {
+  font-feature-settings: "tnum" 1;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Warm accent tweak — align with handoff warm-orange */
+:root {
+  --accent-primary: #e89558;
+  --accent-secondary: #c97538;
+  --accent-tertiary: #f5b486;
+  --accent-glow: rgba(232, 149, 88, 0.22);
+  --text-primary: #ede6db;
+  --text-secondary: #9a8e7d;
+  --text-muted: #5a4f42;
+}

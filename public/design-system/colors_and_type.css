@@ -1,0 +1,234 @@
+/* NFA Trading Suite — Canonical Colors & Typography tokens
+   Import this in any HTML:   <link rel="stylesheet" href="colors_and_type.css"> */
+
+/* Brand fonts: local variable-weight TTFs (Geist, Geist Mono) + JetBrains Mono static weights.
+   Playfair Display and Inter still load from Google Fonts — no brand files provided. */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+@font-face {
+  font-family: 'Geist';
+  src: url('fonts/Geist_wght_.ttf') format('truetype-variations'),
+       url('fonts/Geist_wght_.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Geist Mono';
+  src: url('fonts/GeistMono_wght_.ttf') format('truetype-variations'),
+       url('fonts/GeistMono_wght_.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('fonts/JetBrainsMono-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('fonts/JetBrainsMono-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('fonts/JetBrainsMono-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  /* ============ BASE COLORS ============ */
+  --bg-primary:        #0c0a08;                      /* deep warm black */
+  --bg-surface:        rgba(20, 17, 13, 0.75);       /* glass-strong base */
+  --bg-surface-solid:  #14110d;                      /* no-bdf fallback */
+  --bg-surface-hover:  rgba(35, 28, 20, 0.7);
+  --bg-elevated:       rgba(40, 33, 24, 0.6);
+  --bg-glass:          rgba(18, 15, 11, 0.55);
+  --bg-input:          #3a3630;
+
+  /* ============ BORDERS ============ */
+  --border:            rgba(180, 140, 80, 0.12);
+  --border-active:     rgba(180, 140, 80, 0.25);
+  --border-glow:       rgba(212, 165, 116, 0.3);
+
+  /* ============ TEXT ============ */
+  --fg1:               #ede6db;  /* primary warm off-white */
+  --fg2:               #9a8e7d;  /* secondary */
+  --fg3:               #5a4f42;  /* muted */
+
+  /* ============ ACCENT (warm gold) ============ */
+  --accent:            #d4a574;
+  --accent-light:      #e8c9a4;
+  --accent-dark:       #b08450;
+  --accent-glow:       rgba(212, 165, 116, 0.2);
+  --gradient-start:    #d4a574;
+  --gradient-end:      #8b6914;
+
+  /* ============ SEMANTIC / "NEON" (muted) ============ */
+  --green:   #5dd9a3;
+  --red:     #e87171;
+  --cyan:    #6ac8db;
+  --amber:   #e8b44c;
+  --purple:  #c4a0e8;
+
+  /* ============ RADII ============ */
+  --radius-sm: 6px;    /* buttons dense */
+  --radius-md: 8px;    /* icon squares, small cards */
+  --radius-lg: 12px;   /* cards, modals */
+  --radius-xl: 16px;   /* hero cards */
+  --radius-pill: 999px;
+
+  /* ============ SPACING (4px base) ============ */
+  --s1: 4px;
+  --s2: 8px;
+  --s3: 12px;
+  --s4: 16px;
+  --s5: 20px;
+  --s6: 24px;
+  --s8: 32px;
+  --s10: 40px;
+  --s12: 48px;
+  --s16: 64px;
+
+  /* ============ SHADOWS ============ */
+  --shadow-sm:   0 2px 8px rgba(0,0,0,0.4);
+  --shadow-md:   0 4px 16px rgba(0,0,0,0.5);
+  --shadow-lg:   0 8px 32px rgba(0,0,0,0.6);
+  --glow-accent: 0 0 24px rgba(212,165,116,0.12);
+  --glow-green:  0 0 20px rgba(93,217,163,0.12);
+  --glow-red:    0 0 20px rgba(232,113,113,0.12);
+
+  /* ============ TYPE ============ */
+  --font-sans:    'Geist', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-serif:   'Playfair Display', Georgia, serif;
+  --font-mono:    'Geist Mono', 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+
+  --fs-eyebrow: 11px;
+  --fs-caption: 12px;
+  --fs-body:    14px;
+  --fs-body-lg: 16px;
+  --fs-h3:      18px;
+  --fs-h2:      22px;
+  --fs-h1:      28px;
+  --fs-hero:    32px;
+
+  --lh-tight:   1.15;
+  --lh-body:    1.5;
+
+  --tracking-wide:   0.08em;
+  --tracking-label:  0.12em;
+}
+
+/* ============ CARBON THEME (alternative — lighter, flat, cooler)
+   Activate with <body data-theme="carbon"> or any ancestor.
+   Retains: warm gold accent, serif headings, 4px spacing, all 7 motions.
+   Changes: neutral charcoal backgrounds, flat raised cards (no glass),
+            1px light stroke, warmer orange #e89558 for fills/charts. */
+[data-theme="carbon"] {
+  /* Surfaces — flat elevated cards on neutral charcoal */
+  --bg-primary:        #0e0e12;
+  --bg-surface:        #17171c;
+  --bg-surface-solid:  #17171c;
+  --bg-surface-hover:  #1d1d24;
+  --bg-elevated:       #1a1a20;
+  --bg-glass:          #15151a;    /* not transparent — flat */
+  --bg-input:          #1d1d24;
+
+  /* Light 1px stroke borders */
+  --border:            rgba(255, 255, 255, 0.06);
+  --border-active:     rgba(255, 255, 255, 0.12);
+  --border-glow:       rgba(232, 149, 88, 0.35);
+
+  /* Text — neutral off-whites */
+  --fg1:               #f2f2f5;
+  --fg2:               #8a8a94;
+  --fg3:               #55555e;
+
+  /* Warmer orange for data viz + graph fills; gold stays for UI elements */
+  --accent:            #e89558;   /* warmer orange — was #d4a574 */
+  --accent-light:      #f5b486;
+  --accent-dark:       #c97538;
+  --accent-glow:       rgba(232, 149, 88, 0.22);
+  --accent-ui:         #d4a574;   /* legacy gold kept for UI chrome */
+  --gradient-start:    #e89558;
+  --gradient-end:      #b56a2c;
+
+  /* Shadows — deeper, no inner glow */
+  --shadow-sm:   0 1px 2px rgba(0,0,0,0.4), 0 1px 1px rgba(0,0,0,0.3);
+  --shadow-md:   0 4px 12px rgba(0,0,0,0.5), 0 2px 4px rgba(0,0,0,0.3);
+  --shadow-lg:   0 10px 30px rgba(0,0,0,0.55), 0 4px 8px rgba(0,0,0,0.35);
+  --glow-accent: 0 0 24px rgba(232, 149, 88, 0.18);
+}
+
+/* Carbon: flat cards override — replace glass with raised solid surfaces */
+[data-theme="carbon"] .nfa-glass,
+[data-theme="carbon"] .nfa-glass-strong {
+  background: var(--bg-glass);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Carbon: suppress gradient-border ring (flat aesthetic) */
+[data-theme="carbon"] .nfa-gradient-border::before { display: none; }
+
+
+.nfa-body       { font-family: var(--font-sans); font-size: var(--fs-body); line-height: var(--lh-body); color: var(--fg1); }
+.nfa-eyebrow    { font-family: var(--font-sans); font-size: var(--fs-eyebrow); text-transform: uppercase; letter-spacing: var(--tracking-label); color: var(--fg2); font-weight: 500; }
+.nfa-caption    { font-family: var(--font-sans); font-size: var(--fs-caption); color: var(--fg2); }
+.nfa-h1         { font-family: var(--font-serif); font-size: var(--fs-h1); font-weight: 500; color: var(--fg1); line-height: var(--lh-tight); }
+.nfa-h2         { font-family: var(--font-serif); font-size: var(--fs-h2); font-weight: 500; color: var(--fg1); line-height: var(--lh-tight); }
+.nfa-h3         { font-family: var(--font-sans); font-size: var(--fs-h3); font-weight: 600; color: var(--fg1); }
+.nfa-mono       { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.nfa-hero-num   { font-family: var(--font-mono); font-size: var(--fs-hero); font-weight: 700; letter-spacing: -0.01em; color: var(--accent); }
+.nfa-code       { font-family: var(--font-mono); font-size: 13px; color: var(--fg1); }
+
+/* ============ CORE GLASS CARD ============ */
+.nfa-glass {
+  background: var(--bg-glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+}
+.nfa-glass-strong {
+  background: var(--bg-surface);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border: 1px solid var(--border);
+}
+
+/* Gradient-border ring via mask-composite */
+.nfa-gradient-border { position: relative; }
+.nfa-gradient-border::before {
+  content: "";
+  position: absolute; inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(212,165,116,0.35), rgba(139,105,20,0.15), transparent 60%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Ambient orb */
+.nfa-orb {
+  position: fixed; border-radius: 50%;
+  filter: blur(120px); pointer-events: none; z-index: 0;
+}
+
+/* Animations */
+@keyframes nfa-shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+@keyframes nfa-float   { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+@keyframes nfa-pulse-ring { 0% { transform: scale(0.8); opacity: 1; } 100% { transform: scale(2); opacity: 0; } }
+@keyframes nfa-pulse   { 0%,100% { opacity: 1; transform: scale(1);} 50% { opacity: 0.5; transform: scale(0.85);} }
+@keyframes nfa-spin    { to { transform: rotate(360deg); } }

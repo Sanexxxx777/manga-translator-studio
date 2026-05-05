@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Manga Translation Studio</title>
+  <link rel="icon" href="/favicon.jpg" />
+  <link rel="stylesheet" href="/design-system/colors_and_type.css" />
+  <link rel="stylesheet" href="/design-system/animations.css" />
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/design-system-overlay.css" />
+  <style>
+    /* Override: overlay ставит body { background:#0a0a14 !important } и тогда
+       градиентные ::before/::after не видны → чёрная полоса при коротком контенте.
+       Inline тут — потому что overlay грузится после styles.css и важность нужна выше. */
+    body { background: transparent !important; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 4h16a4 4 0 0 1 4 4v20l-6-4H9a4 4 0 0 1-4-4z"/>
+            <path d="M10 11h10"/>
+            <path d="M10 15h7"/>
+            <path d="M10 19h5"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1 class="page-title">Manga Translation Studio</h1>
+          <div class="brand-sub">MangaDex → manga-image-translator + Gemini → CBZ</div>
+        </div>
+      </div>
+      <div class="topbar-meta">
+        <span id="status-pill" class="pill pill-idle">idle</span>
+      </div>
+    </header>
+
+    <aside class="neighbours-floating" aria-label="Соседние проекты">
+      <div class="nf-head">
+        <span class="nf-title">Соседи по NFA</span>
+        <span class="nf-sub">сервисы · каналы · связь</span>
+      </div>
+      <ul class="nf-list">
+        <li>
+          <a href="https://setupmanager.dpdns.org" target="_blank" rel="noopener">
+            <span class="nb-name">Setup Manager</span>
+            <span class="nb-desc">сигналы и сетапы</span>
+          </a>
+        </li>
+        <li>
+          <a href="https://sectormap.dpdns.org" target="_blank" rel="noopener">
+            <span class="nb-name">Crypto Sector</span>
+            <span class="nb-desc">сектор-дашборд крипты</span>
+          </a>
+        </li>
+        <li>
+          <a href="https://t.me/openclaw_lab" target="_blank" rel="noopener">
+            <span class="nb-name">OpenClaw Lab</span>
+            <span class="nb-desc">Telegram-канал · research</span>
+          </a>
+        </li>
+        <li>
+          <a href="https://t.me/Aleksandr_NFA" target="_blank" rel="noopener" class="nf-contact">
+            <span class="nb-name">Связь с автором</span>
+            <span class="nb-desc">@Aleksandr_NFA</span>
+          </a>
+        </li>
+      </ul>
+    </aside>
+
+    <main>
+      <!-- Шаг 1: ввод -->
+      <section class="card input-card">
+        <div class="card-head">
+          <span class="step-num">1</span>
+          <div>
+            <h2>Вставь ссылку или UUID главы MangaDex</h2>
+            <p class="muted">Откроется любая глава. Пример: <code>https://mangadex.org/chapter/&lt;uuid&gt;</code> или просто UUID.</p>
+          </div>
+        </div>
+        <form id="job-form" class="input-row">
+          <input
+            id="url-input"
+            type="text"
+            placeholder="https://mangadex.org/chapter/31af5c06-7564-4aac-9bbc-5b6d90c84197/1"
+            autocomplete="off"
+            spellcheck="false"
+            required
+          />
+          <button id="run-btn" type="submit">
+            <span class="btn-label">Перевести</span>
+          </button>
+        </form>
+        <div class="input-hint muted">
+          Первый прогон новой главы: <strong>~5–9 минут</strong>. Повторно та же глава — мгновенно из кеша.
+        </div>
+      </section>
+
+      <!-- Шаг 2: прогресс / результат -->
+      <section class="card progress-card" id="progress-card" hidden>
+        <div class="card-head">
+          <span class="step-num">2</span>
+          <div>
+            <h2>Перевод <span id="chapter-id-label" class="mono"></span></h2>
+            <p class="muted" id="progress-meta">Запускаю…</p>
+          </div>
+        </div>
+
+        <div class="progress-grid">
+          <div class="pages-pane">
+            <div class="pane-head">
+              <h3>Страницы</h3>
+              <span id="pages-counter" class="pill pill-info">0</span>
+            </div>
+            <div id="pages-grid" class="pages-grid"></div>
+            <div id="pages-empty" class="pane-empty">Превью появится по мере готовности страниц.</div>
+          </div>
+
+          <div class="logs-pane">
+            <div class="pane-head">
+              <h3>Лог пайплайна</h3>
+              <button id="copy-log-btn" class="ghost-btn" title="Скопировать лог">copy</button>
+            </div>
+            <pre id="log-stream" class="log-stream"></pre>
+          </div>
+        </div>
+
+        <div class="result-bar" id="result-bar" hidden>
+          <div class="result-summary" id="result-summary"></div>
+          <a id="cbz-download" class="primary-btn" href="#" hidden>
+            <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v9"/><path d="M3.5 8.5 8 13l4.5-4.5"/></svg>
+            Скачать CBZ
+          </a>
+          <a id="open-folder" class="ghost-btn" href="#" hidden target="_blank">
+            <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4a1 1 0 0 1 1-1h3l1.5 2H13a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1z"/></svg>
+            Открыть папку со страницами
+          </a>
+        </div>
+      </section>
+
+      <!-- Шаг 3: история -->
+      <section class="card history-card">
+        <div class="card-head">
+          <span class="step-num">3</span>
+          <div>
+            <h2>История</h2>
+            <p class="muted">Последние переводы. Клик — открыть страницы заново или забрать CBZ.</p>
+          </div>
+        </div>
+        <div id="history-list" class="history-list"></div>
+        <div id="history-empty" class="muted small">пока пусто</div>
+      </section>
+
+      <details class="card readers-card">
+        <summary>Чем открыть .cbz на Mac</summary>
+        <ol class="readers-list">
+          <li>
+            <strong>YACReader</strong> — лучший OSS-ридер для CBZ на macOS. Закладки, листание разворотом, библиотека.
+            <code>brew install --cask yacreader</code>
+          </li>
+          <li>
+            <strong>Simple Comic</strong> — нативный, лёгкий, открывается за секунду. App Store, бесплатно.
+          </li>
+          <li>
+            <strong>Chunky Reader</strong> — есть Mac-версия, удобный жестовый интерфейс. Платный, ~$5.
+          </li>
+        </ol>
+        <p class="muted small">CBZ — это просто zip с картинками. В крайнем случае можно переименовать в .zip и открыть как обычную папку.</p>
+      </details>
+    </main>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>

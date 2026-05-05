@@ -1,0 +1,632 @@
+/*
+  NFA Trading Suite — Design System Overlay (v2)
+  Liquid Glass everywhere. Reference: NFA Dashboard warm-brown background
+  with deep amber accent, pastel-ribbon Playfair titles, glassy cards with
+  inset chromatic edge highlight.
+*/
+
+@import url('./colors_and_type.css');
+@import url('./animations.css');
+@import url('./app-identity.css');
+@import url('./export-tokens.css');
+
+/* ═══════════════════════════════════════════════════════════════
+   LIQUID GLASS BACKGROUND
+   Single background on body w/ background-attachment: fixed
+   covers whole document, no seam at viewport edge.
+   ═══════════════════════════════════════════════════════════════ */
+html { background: #120e09 !important; min-height: 100%; }
+body {
+  background-color: #120e09 !important;
+  background-image:
+    radial-gradient(ellipse 75% 60% at 72% 68%,  rgba(232, 149, 88, 0.11), transparent 65%),
+    radial-gradient(ellipse 65% 55% at 18% 82%,  rgba(212, 140, 78, 0.07), transparent 70%),
+    linear-gradient(135deg, #17110c 0%, #14100b 24%, #120e0a 50%, #100c09 75%, #0d0906 100%),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0 0.025 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>") !important;
+  background-attachment: fixed, fixed, fixed, fixed !important;
+  background-size: auto, auto, auto, 220px 220px !important;
+  background-repeat: no-repeat, no-repeat, no-repeat, repeat !important;
+  min-height: 100%;
+  position: relative;
+}
+/* Kill any legacy ::before/::after that set conflicting backgrounds on body */
+body::before, body::after { background: none !important; content: none !important; }
+/* Disable legacy gamma main-content noise layer */
+[data-style="gamma"] .main-content::before { background: none !important; content: none !important; }
+/* Containers transparent so body gradient is visible */
+#app, #root, .app-layout, .app-container, .main-content { background: transparent !important; min-height: 100vh; }
+
+/* Legacy body::before/::after from previous overlay version are disabled above.
+   Background is now directly on body with background-attachment: fixed,
+   which eliminates the mid-page seam caused by fixed pseudo-elements. */
+
+/* Kill decorative corner triangles on stat/stats cards (clash with Liquid Glass) */
+.stat-item::after, .stat-item::before,
+.stats-card::after, .stats-card::before,
+.stat-card::after, .stat-card::before {
+  display: none !important;
+  content: none !important;
+  background: none !important;
+}
+
+/* App containers transparent */
+.app-container, main, .main-content, .main, #app, #root,
+.dashboard, .sidebar-layout, .view-container {
+  background: transparent !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TOKENS
+   ═══════════════════════════════════════════════════════════════ */
+:root {
+  --nfa-font-sans:  'Geist', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --nfa-font-mono:  'Geist Mono', 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+  --nfa-font-serif: 'Playfair Display', Georgia, serif;
+
+  --nfa-accent:          #e89558;
+  --nfa-accent-light:    #f5b486;
+  --nfa-accent-dark:     #c97538;
+  --nfa-accent-glow:     rgba(232, 149, 88, 0.28);
+  --nfa-accent-glow-lg:  rgba(232, 149, 88, 0.18);
+
+  --nfa-green:   #5dd9a3;
+  --nfa-red:     #e87171;
+  --nfa-amber:   #e8b44c;
+  --nfa-cyan:    #6ac8db;
+  --nfa-purple:  #c4a0e8;
+
+  --nfa-text-primary:   #ede6db;
+  --nfa-text-secondary: #a09586;
+  --nfa-text-muted:     #6d6358;
+
+  --nfa-glass-bg:           rgba(30, 22, 16, 0.42);
+  --nfa-glass-bg-elevated:  rgba(38, 28, 20, 0.55);
+  --nfa-glass-bg-hover:     rgba(48, 36, 26, 0.58);
+  --nfa-glass-border:       rgba(255, 255, 255, 0.08);
+  --nfa-glass-border-hover: rgba(232, 149, 88, 0.22);
+  --nfa-glass-inset:        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  --nfa-shadow-card:        0 12px 36px -14px rgba(0, 0, 0, 0.6),
+                            0 2px 6px rgba(0, 0, 0, 0.25);
+  --nfa-shadow-card-hover:  0 16px 44px -12px rgba(0, 0, 0, 0.65),
+                            0 0 24px var(--nfa-accent-glow-lg);
+  --nfa-sidebar-bg:         rgba(20, 14, 10, 0.55);
+}
+
+body, #app, #root, input, button, select, textarea {
+  font-family: var(--nfa-font-sans);
+  color: var(--nfa-text-primary);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TYPOGRAPHY — pastel-ribbon Playfair titles
+   ═══════════════════════════════════════════════════════════════ */
+.sidebar-logo, .page-header h1, .page-title, h1.title,
+.app-title, .logo-text, .sidebar-brand-text, .brand-name,
+.defi-header h2 {
+  font-family: var(--nfa-font-serif) !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.02em;
+  background: linear-gradient(
+    92deg,
+    #f5b486 0%,
+    #8fd4d0 28%,
+    #b4e28d 52%,
+    #c9a6e6 76%,
+    #f2a6c8 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* Section headings — warm cream */
+h2, h3, .section-title, .card-title, .panel-title {
+  color: var(--nfa-text-primary);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* Eyebrow labels — uppercase muted */
+.eyebrow, .summary-label, .stat-label, .defi-pulse-label, .meta-label,
+.kpi-label, .metric-label {
+  font-size: 10.5px !important;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--nfa-text-secondary) !important;
+  font-weight: 500;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   GLASS PANELS — deeper warm, chromatic edge, amber hover
+   ═══════════════════════════════════════════════════════════════ */
+.card, .setup-card, .stat-card, .panel,
+.modal-content, .price-card, .history-card, .form-section,
+.summary-card, .sector-card, .momentum-card, .heatmap-sector,
+.ai-message, .signal-card, .defi-pulse-card, .defi-table-wrap,
+.defi-info-box, .filter-panel, .ai-card, .faq-card,
+.card-content, .metric-card, .kpi-card, .bot-card {
+  background: var(--nfa-glass-bg) !important;
+  backdrop-filter: blur(22px) saturate(115%) !important;
+  -webkit-backdrop-filter: blur(22px) saturate(115%) !important;
+  border: 1px solid var(--nfa-glass-border) !important;
+  box-shadow: var(--nfa-glass-inset), var(--nfa-shadow-card) !important;
+  border-radius: 14px;
+  transition: background 280ms var(--ease-nfa, cubic-bezier(0.4,0,0.2,1)),
+              border-color 280ms var(--ease-nfa, cubic-bezier(0.4,0,0.2,1)),
+              transform 280ms var(--ease-nfa, cubic-bezier(0.4,0,0.2,1)),
+              box-shadow 280ms var(--ease-nfa, cubic-bezier(0.4,0,0.2,1));
+}
+
+.sidebar {
+  background: var(--nfa-sidebar-bg) !important;
+  backdrop-filter: blur(26px) saturate(115%) !important;
+  -webkit-backdrop-filter: blur(26px) saturate(115%) !important;
+  border-right: 1px solid var(--nfa-glass-border) !important;
+  box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.03);
+}
+
+/* Hover lifts + warm glow */
+.card:hover, .setup-card:hover, .stat-card:hover,
+.summary-card:hover, .sector-card:hover, .momentum-card:hover,
+.defi-pulse-card:hover, .metric-card:hover, .kpi-card:hover {
+  background: var(--nfa-glass-bg-hover) !important;
+  border-color: var(--nfa-glass-border-hover) !important;
+  transform: translateY(-2px);
+  box-shadow: var(--nfa-glass-inset), var(--nfa-shadow-card-hover) !important;
+}
+
+/* Active / selected KPI — warm amber ring + inner glow (reference pic) */
+.kpi-card.active, .summary-card.active, .metric-card.active,
+.stat-card.active, .card.is-active {
+  background: linear-gradient(
+    135deg,
+    rgba(232, 149, 88, 0.14),
+    rgba(232, 149, 88, 0.04) 60%
+  ), var(--nfa-glass-bg-elevated) !important;
+  border-color: rgba(232, 149, 88, 0.42) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 0 32px rgba(232, 149, 88, 0.18),
+    0 12px 36px -12px rgba(0, 0, 0, 0.7) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   KPI icon badges — square rounded with warm gradient
+   ═══════════════════════════════════════════════════════════════ */
+.kpi-icon, .stat-icon, .metric-icon, .summary-icon {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  display: inline-grid;
+  place-items: center;
+  background: linear-gradient(135deg, var(--nfa-accent), var(--nfa-accent-dark));
+  color: #1a120b;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25),
+              0 4px 12px rgba(232, 149, 88, 0.25);
+  flex-shrink: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   BUTTONS + NAV
+   ═══════════════════════════════════════════════════════════════ */
+.btn-primary, .button-primary, .primary-btn, button.primary, .cta-primary {
+  background: linear-gradient(135deg, var(--nfa-accent), var(--nfa-accent-dark)) !important;
+  color: #0c0a08 !important;
+  border: 0 !important;
+  font-weight: 600;
+  border-radius: 10px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    0 4px 14px rgba(232, 149, 88, 0.32) !important;
+  transition: transform 140ms var(--ease-nfa, cubic-bezier(0.4,0,0.2,1)),
+              box-shadow 180ms var(--ease-nfa, cubic-bezier(0.4,0,0.2,1));
+}
+.btn-primary:hover { transform: translateY(-1px); box-shadow: inset 0 1px 0 rgba(255,255,255,.25), 0 6px 20px rgba(232,149,88,.4) !important; }
+.btn-primary:active { transform: scale(0.98); }
+
+/* Ghost/secondary buttons */
+.btn-secondary, .btn-ghost, button.ghost {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid var(--nfa-glass-border) !important;
+  color: var(--nfa-text-primary) !important;
+  border-radius: 10px;
+}
+.btn-secondary:hover, .btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: var(--nfa-glass-border-hover) !important;
+}
+
+/* Sidebar nav items */
+.nav-item, .nav-i, .sidebar-nav a, .sidebar-nav button {
+  color: var(--nfa-text-secondary) !important;
+  border-radius: 10px;
+  transition: background 180ms var(--ease-nfa, cubic-bezier(0.4,0,0.2,1)),
+              color 180ms var(--ease-nfa, cubic-bezier(0.4,0,0.2,1));
+}
+.nav-item:hover, .nav-i:hover,
+.sidebar-nav a:hover, .sidebar-nav button:hover {
+  background: rgba(255, 255, 255, 0.04) !important;
+  color: var(--nfa-text-primary) !important;
+}
+.nav-item.active, .nav-i.active,
+.sidebar-nav a.active, .sidebar-nav .active {
+  background: linear-gradient(135deg, rgba(232, 149, 88, 0.16), rgba(232, 149, 88, 0.05)) !important;
+  color: var(--nfa-accent-light) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08),
+              inset 2px 0 0 var(--nfa-accent);
+}
+
+/* Accent links */
+a.accent, .text-accent { color: var(--nfa-accent-light) !important; }
+
+/* ═══════════════════════════════════════════════════════════════
+   NUMERICS — tabular mono everywhere
+   ═══════════════════════════════════════════════════════════════ */
+.price, .change, .stat-value, .pnl-value,
+.entry-price, .tp-price, .sl-price,
+.mcap-value, .change-value, .summary-value,
+.kpi-value, .metric-value, .mono, .num, .nfa-mono, [data-numeric],
+td.change-value, td.mcap-value, .defi-pulse-value {
+  font-feature-settings: "tnum" 1;
+  font-variant-numeric: tabular-nums;
+  font-family: var(--nfa-font-mono) !important;
+  letter-spacing: -0.005em;
+}
+
+/* Hero mono — big KPI values */
+.kpi-value, .stat-value, .summary-value, .metric-value, .defi-pulse-value {
+  color: var(--nfa-text-primary);
+  font-weight: 600;
+}
+
+/* Semantic */
+.positive, .change-positive, .text-green, .defi-up, .pnl-positive {
+  color: var(--nfa-green) !important;
+}
+.negative, .change-negative, .text-red, .defi-down, .pnl-negative {
+  color: var(--nfa-red) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PROGRESS BARS + CHARTS — warm orange fills
+   ═══════════════════════════════════════════════════════════════ */
+progress, .progress, .progress-bar-track, [role="progressbar"] {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-radius: 999px;
+  overflow: hidden;
+}
+.progress-bar-fill, .progress > .bar, [role="progressbar"] > div {
+  background: linear-gradient(90deg, var(--nfa-accent-dark), var(--nfa-accent)) !important;
+  box-shadow: 0 0 12px var(--nfa-accent-glow);
+  border-radius: 999px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   INPUTS + SEARCH
+   ═══════════════════════════════════════════════════════════════ */
+input[type="text"], input[type="email"], input[type="password"],
+input[type="number"], input[type="search"], textarea, select,
+.search-input, .form-input, .search-box input {
+  background: rgba(20, 15, 10, 0.55) !important;
+  border: 1px solid var(--nfa-glass-border) !important;
+  color: var(--nfa-text-primary) !important;
+  border-radius: 10px;
+  transition: border-color 180ms, box-shadow 180ms;
+}
+input::placeholder, textarea::placeholder { color: var(--nfa-text-muted); }
+input:focus, textarea:focus, select:focus,
+.search-input:focus, .form-input:focus {
+  outline: none !important;
+  border-color: var(--nfa-accent) !important;
+  box-shadow: 0 0 0 3px rgba(232, 149, 88, 0.18),
+              inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TABLES
+   ═══════════════════════════════════════════════════════════════ */
+table { border-collapse: separate; border-spacing: 0; }
+th {
+  font-size: 10.5px !important;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--nfa-text-secondary) !important;
+  font-weight: 600;
+  border-bottom: 1px solid var(--nfa-glass-border) !important;
+  background: transparent !important;
+  padding: 12px !important;
+}
+td {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04) !important;
+  padding: 11px 12px !important;
+}
+tbody tr { transition: background 160ms; }
+tbody tr:hover td { background: rgba(232, 149, 88, 0.04); }
+
+/* ═══════════════════════════════════════════════════════════════
+   BADGES, PILLS, CHIPS
+   ═══════════════════════════════════════════════════════════════ */
+.badge, .pill, .chip, .tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--nfa-glass-border);
+  color: var(--nfa-text-primary);
+}
+.badge.accent, .pill.accent {
+  background: rgba(232, 149, 88, 0.15);
+  border-color: rgba(232, 149, 88, 0.35);
+  color: var(--nfa-accent-light);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SCROLLBAR
+   ═══════════════════════════════════════════════════════════════ */
+* { scrollbar-width: thin; scrollbar-color: rgba(232, 149, 88, 0.2) transparent; }
+*::-webkit-scrollbar { width: 8px; height: 8px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb {
+  background: rgba(232, 149, 88, 0.22);
+  border-radius: 4px;
+}
+*::-webkit-scrollbar-thumb:hover { background: rgba(232, 149, 88, 0.4); }
+
+/* ═══════════════════════════════════════════════════════════════
+   AMBIENT ORBS — decorative drifting circles
+   ═══════════════════════════════════════════════════════════════ */
+.nfa-orb-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+.nfa-orb-layer .orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(140px);
+  opacity: 0.55;
+  animation: nfa-orb-drift 18s ease-in-out infinite;
+  will-change: transform;
+}
+.nfa-orb-layer .orb-1 {
+  width: 620px; height: 620px;
+  background: rgba(232, 149, 88, 0.14);
+  top: -220px; left: -160px;
+}
+.nfa-orb-layer .orb-2 {
+  width: 480px; height: 480px;
+  background: rgba(212, 140, 78, 0.10);
+  bottom: -180px; right: -140px;
+  animation-delay: -9s;
+  animation-duration: 22s;
+}
+.nfa-orb-layer .orb-3 {
+  width: 340px; height: 340px;
+  background: rgba(139, 95, 189, 0.05);
+  top: 38%; right: 24%;
+  animation-delay: -4s;
+  animation-duration: 14s;
+}
+@keyframes nfa-orb-drift {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50%      { transform: translate3d(22px, -34px, 0) scale(1.06); }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PAGE ENTRANCE — fade-up stagger
+   ═══════════════════════════════════════════════════════════════ */
+.view-container:not(.hidden) > * {
+  animation: nfa-fade-up 500ms var(--ease-nfa, cubic-bezier(0.4,0,0.2,1)) both;
+}
+.view-container:not(.hidden) > *:nth-child(1) { animation-delay: 0ms; }
+.view-container:not(.hidden) > *:nth-child(2) { animation-delay: 60ms; }
+.view-container:not(.hidden) > *:nth-child(3) { animation-delay: 120ms; }
+.view-container:not(.hidden) > *:nth-child(4) { animation-delay: 180ms; }
+.view-container:not(.hidden) > *:nth-child(5) { animation-delay: 240ms; }
+.view-container:not(.hidden) > *:nth-child(6) { animation-delay: 300ms; }
+
+/* ═══════════════════════════════════════════════════════════════
+   PRODUCT-SPECIFIC ACCENTS
+   Each product gets a subtle unique flourish while sharing base.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ---- SECTOR-MAP (crypto-dashboard) ------------------------------
+   Chromatic sector orbs (green/cyan/red) ambient behind content,
+   evoking sector heatmap. Pastel gradient on heatmap tiles. */
+body[data-product="sector-map"] .nfa-orb-layer .orb-2 {
+  background: rgba(93, 217, 163, 0.08);
+}
+body[data-product="sector-map"] .nfa-orb-layer .orb-3 {
+  background: rgba(106, 200, 219, 0.07);
+}
+body[data-product="sector-map"] .heatmap-sector {
+  position: relative;
+  overflow: hidden;
+}
+body[data-product="sector-map"] .heatmap-sector::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.04), transparent 60%);
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+/* ---- SETUP-MANAGER ----------------------------------------------
+   Larger hero PnL numbers in Playfair. Risk tier badges pastel.
+   Amber-purple orb combo for distinctive feel. */
+body[data-product="setup-manager"] .nfa-orb-layer .orb-3 {
+  background: rgba(196, 160, 232, 0.08);
+}
+body[data-product="setup-manager"] .pnl-value,
+body[data-product="setup-manager"] .total-pnl,
+body[data-product="setup-manager"] .stat-hero {
+  font-family: var(--nfa-font-serif) !important;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  font-size: 1.35em;
+}
+body[data-product="setup-manager"] .risk-normal {
+  background: rgba(93, 217, 163, 0.14);
+  color: var(--nfa-green);
+  border: 1px solid rgba(93, 217, 163, 0.3);
+}
+body[data-product="setup-manager"] .risk-high {
+  background: rgba(232, 180, 76, 0.14);
+  color: var(--nfa-amber);
+  border: 1px solid rgba(232, 180, 76, 0.3);
+}
+body[data-product="setup-manager"] .risk-ludka {
+  background: rgba(232, 113, 113, 0.16);
+  color: var(--nfa-red);
+  border: 1px solid rgba(232, 113, 113, 0.35);
+  box-shadow: 0 0 12px rgba(232, 113, 113, 0.2);
+}
+
+/* ---- DASHBOARD (nfa-dashboard) ---------------------------------
+   Reference implementation. Already in Liquid Glass. No overrides. */
+
+/* ═══════════════════════════════════════════════════════════════
+   REDUCED MOTION
+   ═══════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  body::before, .nfa-orb-layer .orb, .view-container > * {
+    animation: none !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   LEGACY CSS VARS OVERRIDE
+   Remap existing tokens used in styles.css → Liquid Glass palette.
+   Applies to both setup-manager and crypto-dashboard variables.
+   Also forces any [data-theme] / [data-style] to inherit Liquid Glass.
+   ═══════════════════════════════════════════════════════════════ */
+body,
+body[data-theme="dark"],
+body[data-theme="light"],
+body[data-style="gamma"],
+body[data-style="classic"],
+html[data-theme="dark"],
+html[data-theme="light"] {
+  /* setup-manager vars */
+  --bg-primary:    transparent;
+  --bg-card:       rgba(30, 22, 16, 0.42);
+  --bg-sidebar:    rgba(20, 14, 10, 0.55);
+  --bg-input:      rgba(20, 15, 10, 0.55);
+  --bg-hover:      rgba(232, 149, 88, 0.10);
+  --bg-prices:     rgba(30, 22, 16, 0.42);
+
+  /* crypto-dashboard vars */
+  --bg-secondary:    rgba(30, 22, 16, 0.42);
+  --bg-card-hover:   rgba(48, 36, 26, 0.58);
+  --border-light:    rgba(255, 255, 255, 0.05);
+
+  /* common */
+  --text-primary:    #ede6db;
+  --text-secondary:  #a09586;
+  --text-muted:      #6d6358;
+  --border-color:    rgba(255, 255, 255, 0.08);
+
+  --accent-primary:   #e89558;
+  --accent-secondary: #c97538;
+  --accent-tertiary:  #f5b486;
+  --accent-blue:      #e89558;    /* repaint blue → warm */
+  --accent-purple:    #c4a0e8;
+  --accent-green:     #5dd9a3;
+  --accent-red:       #e87171;
+  --accent-orange:    #e89558;
+  --accent-yellow:    #e8b44c;
+
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 16px 44px rgba(0, 0, 0, 0.55);
+  --shadow-glow: 0 0 20px rgba(232, 149, 88, 0.22);
+}
+
+/* Extra coverage for specific setup-manager classes that hardcode background */
+.setup-card, .advice-card, .ai-chat-section, .stat-item,
+.live-prices-widget, .filter-input, .filter-select, .ai-chat-input,
+.advice-modal, .user-menu, .history-card {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border-color) !important;
+  backdrop-filter: blur(20px) saturate(115%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(115%) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), var(--shadow-sm) !important;
+}
+.setup-card:hover, .advice-card:hover, .stat-item:hover {
+  background: var(--bg-card-hover) !important;
+  border-color: rgba(232, 149, 88, 0.2) !important;
+  transform: translateY(-2px);
+}
+
+/* Exchange badges — soften */
+.exchange-bybit, .badge-market, .badge-leverage {
+  background: rgba(232, 149, 88, 0.12) !important;
+  color: var(--nfa-accent-light) !important;
+  border: 1px solid rgba(232, 149, 88, 0.22) !important;
+}
+.exchange-gate {
+  background: rgba(139, 95, 189, 0.14) !important;
+  color: var(--nfa-purple) !important;
+  border: 1px solid rgba(139, 95, 189, 0.3) !important;
+}
+.badge-long {
+  background: rgba(93, 217, 163, 0.14) !important;
+  color: var(--nfa-green) !important;
+  border: 1px solid rgba(93, 217, 163, 0.3) !important;
+}
+.badge-short {
+  background: rgba(232, 113, 113, 0.14) !important;
+  color: var(--nfa-red) !important;
+  border: 1px solid rgba(232, 113, 113, 0.3) !important;
+}
+.setup-status.active, .status-active {
+  background: rgba(93, 217, 163, 0.14) !important;
+  color: var(--nfa-green) !important;
+  border: 1px solid rgba(93, 217, 163, 0.35) !important;
+}
+
+/* Entry chips (filled/pending) */
+.entry-chip, .target-chip, .stop-chip {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  color: var(--text-primary) !important;
+}
+.entry-chip.filled, .entry-hit {
+  background: rgba(93, 217, 163, 0.12) !important;
+  color: var(--nfa-green) !important;
+  border: 1px solid rgba(93, 217, 163, 0.3) !important;
+}
+.stop-chip, .sl-value {
+  background: rgba(232, 113, 113, 0.10) !important;
+  color: var(--nfa-red) !important;
+  border: 1px solid rgba(232, 113, 113, 0.25) !important;
+}
+
+/* Risk labels */
+.setup-risk, .risk-label {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-secondary) !important;
+}
+
+/* Sidebar create-setup button — pumped */
+.sidebar-create-btn, .create-setup-btn, button.create {
+  background: linear-gradient(135deg, var(--nfa-accent), var(--nfa-accent-dark)) !important;
+  color: #1a120b !important;
+  border: 0 !important;
+  font-weight: 600;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.25), 0 6px 18px rgba(232,149,88,0.28) !important;
+}
+
+/* Live prices widget bubbles */
+.live-price {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid var(--border-color) !important;
+}

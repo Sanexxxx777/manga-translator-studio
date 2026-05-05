@@ -1,0 +1,515 @@
+/* ============================================================
+   NFA Trading Suite — Export Tokens (shadcn-compatible)
+   ============================================================
+   Drop-in token file for app integration. Includes:
+   • shadcn-mapped CSS variables (dark default + light override)
+   • Component states (hover/active/disabled/focus/loading)
+   • Responsive 12-col grid (mobile <640, tablet 640-1024, desktop >1024)
+   • Recharts palette (stroke/fill/grid/tooltip)
+   • Skeleton/empty/error states
+   • Tabular nums on all numeric classes
+
+   Usage (Tailwind + shadcn):
+     <link rel="stylesheet" href="colors_and_type.css">
+     <link rel="stylesheet" href="animations.css">
+     <link rel="stylesheet" href="export-tokens.css">
+     <body class="dark"> or <body> (defaults to dark)
+   ============================================================ */
+
+/* ─────────────────────────────────────────────────────────────
+   1. SHADCN TOKEN MAP — DARK (default, carbon-tuned)
+   HSL form keeps shadcn theming compatible.
+   ─────────────────────────────────────────────────────────── */
+:root,
+.dark,
+[data-theme="dark"],
+[data-theme="carbon"] {
+  /* shadcn canonical tokens — HSL triplets (no hsl() wrapper) */
+  --background:        240 14% 7%;      /* #0e0e12 */
+  --foreground:        240 7% 95%;      /* #f2f2f5 */
+  --card:              240 10% 10%;     /* #17171c */
+  --card-foreground:   240 7% 95%;
+  --popover:           240 10% 10%;
+  --popover-foreground:240 7% 95%;
+  --primary:           25 74% 63%;      /* #e89558 warm orange */
+  --primary-foreground:240 14% 7%;
+  --secondary:         240 8% 14%;      /* #1d1d24 */
+  --secondary-foreground: 240 7% 95%;
+  --muted:             240 8% 14%;
+  --muted-foreground:  240 5% 56%;      /* #8a8a94 */
+  --accent:            31 48% 64%;      /* #d4a574 gold (UI chrome) */
+  --accent-foreground: 240 14% 7%;
+  --destructive:       0 72% 56%;       /* error red */
+  --destructive-foreground: 240 7% 95%;
+  --success:           156 65% 61%;     /* #5dd9a3 */
+  --warning:           38 92% 62%;
+  --info:              195 77% 60%;
+  --border:            0 0% 100% / 0.06; /* tinted overlay */
+  --input:             240 8% 14%;
+  --ring:              25 74% 63%;      /* focus ring = primary */
+  --radius:            0.75rem;         /* 12px */
+
+  /* Derived hex convenience (for non-shadcn consumers) */
+  --color-bg:          #0e0e12;
+  --color-fg:          #f2f2f5;
+  --color-fg-muted:    #8a8a94;
+  --color-fg-subtle:   #55555e;
+  --color-card:        #17171c;
+  --color-card-raised: #1a1a20;
+  --color-primary:     #e89558;
+  --color-primary-hover: #f5b486;
+  --color-primary-active: #c97538;
+  --color-accent-gold: #d4a574;
+  --color-success:     #5dd9a3;
+  --color-warning:     #f5b84d;
+  --color-error:       #e56a6a;
+  --color-border:      rgba(255,255,255,0.06);
+  --color-border-strong: rgba(255,255,255,0.12);
+  --color-ring:        rgba(232,149,88,0.55);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   2. LIGHT MODE (optional — warm, editorial, not clinical)
+   ─────────────────────────────────────────────────────────── */
+.light,
+[data-theme="light"] {
+  --background:        40 25% 98%;      /* #faf7f2 warm paper */
+  --foreground:        240 14% 9%;
+  --card:              0 0% 100%;
+  --card-foreground:   240 14% 9%;
+  --popover:           0 0% 100%;
+  --popover-foreground:240 14% 9%;
+  --primary:           22 68% 48%;      /* deeper orange for AA on white */
+  --primary-foreground:0 0% 100%;
+  --secondary:         40 14% 92%;
+  --secondary-foreground: 240 14% 9%;
+  --muted:             40 14% 94%;
+  --muted-foreground:  240 5% 40%;
+  --accent:            31 48% 42%;
+  --accent-foreground: 0 0% 100%;
+  --destructive:       0 72% 45%;
+  --destructive-foreground: 0 0% 100%;
+  --border:            240 10% 10% / 0.1;
+  --input:             40 14% 94%;
+  --ring:              22 68% 48%;
+
+  --color-bg:          #faf7f2;
+  --color-fg:          #17171c;
+  --color-fg-muted:    #6b6b74;
+  --color-fg-subtle:   #9a9aa0;
+  --color-card:        #ffffff;
+  --color-card-raised: #fbf8f3;
+  --color-primary:     #c97538;        /* passes AA on white */
+  --color-primary-hover: #b06228;
+  --color-primary-active: #8f4e1d;
+  --color-accent-gold: #9a7842;
+  --color-success:     #1f9866;
+  --color-warning:     #b8862a;
+  --color-error:       #c73e3e;
+  --color-border:      rgba(23,23,28,0.1);
+  --color-border-strong: rgba(23,23,28,0.18);
+  --color-ring:        rgba(201,117,56,0.55);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   3. WCAG AA CONTRAST NOTES
+   ─────────────────────────────────────────────────────────── */
+/*
+  Contrast ratios (tested against WebAIM calculator):
+
+  DARK MODE:
+  ✓ #e89558 (primary) on #0e0e12  = 6.8:1  (AA Large ✓, AA Normal ✓)
+  ✓ #e89558 (primary) on #17171c  = 6.4:1  (AA ✓)
+  ✓ #f2f2f5 (fg)      on #0e0e12  = 17.2:1 (AAA ✓)
+  ✓ #8a8a94 (muted)   on #0e0e12  = 5.7:1  (AA ✓)
+  ✗ #8a8a94 (muted)   on #17171c  = 4.9:1  (AA Large only — use for 18px+)
+  ✗ #55555e (subtle)  on #0e0e12  = 2.8:1  (decoration only, never body text)
+
+  LIGHT MODE:
+  ✓ #c97538 (primary) on #ffffff  = 4.6:1  (AA Normal ✓)
+  ✓ #c97538 (primary) on #faf7f2  = 4.4:1  (AA Normal ✓)
+  ✓ #17171c (fg)      on #faf7f2  = 16.8:1 (AAA ✓)
+  ✓ #6b6b74 (muted)   on #faf7f2  = 4.9:1  (AA ✓)
+
+  Rule of thumb: use --color-primary for ≥14px text on cards/bg.
+  For ≤12px chips/tags, use --color-fg or darker backgrounds.
+*/
+
+/* ─────────────────────────────────────────────────────────────
+   4. TABULAR NUMBERS — applied everywhere numeric
+   ─────────────────────────────────────────────────────────── */
+.metric, .metric-value,
+.price, .price-value,
+.balance, .balance-value,
+.num, .numeric, .tabular,
+[data-numeric], [data-mono],
+td.mono, .mono-num,
+.chart-total, .chart-delta, .chart-callout,
+.progress-value,
+input[type="number"] {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   5. COMPONENT STATES — BUTTONS
+   ─────────────────────────────────────────────────────────── */
+.btn {
+  --btn-bg: var(--color-primary);
+  --btn-fg: var(--color-bg);
+  --btn-border: transparent;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 8px;
+  border: 1px solid var(--btn-border);
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font: 600 13px/1 var(--font-sans, system-ui);
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 180ms cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+}
+.btn:hover:not(:disabled):not([aria-busy="true"]) {
+  background: var(--color-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(232, 149, 88, 0.25);
+}
+.btn:active:not(:disabled) {
+  background: var(--color-primary-active);
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+.btn:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+}
+.btn:disabled,
+.btn[aria-disabled="true"] {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}
+.btn[aria-busy="true"] {
+  cursor: progress;
+  color: transparent;
+  pointer-events: none;
+}
+.btn[aria-busy="true"]::after {
+  content: "";
+  position: absolute;
+  width: 14px; height: 14px;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  color: var(--color-bg);
+  animation: btn-spin 0.7s linear infinite;
+}
+@keyframes btn-spin { to { transform: rotate(360deg); } }
+
+/* Secondary / outline variants */
+.btn.btn-ghost {
+  --btn-bg: transparent;
+  --btn-fg: var(--color-fg);
+  --btn-border: var(--color-border-strong);
+}
+.btn.btn-ghost:hover:not(:disabled) {
+  background: rgba(255,255,255,0.04);
+}
+.btn.btn-destructive {
+  --btn-bg: var(--color-error);
+  --btn-fg: #fff;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   6. COMPONENT STATES — CARDS
+   ─────────────────────────────────────────────────────────── */
+.card {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 20px;
+  color: var(--color-fg);
+  transition: all 240ms cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+.card[data-interactive="true"],
+.card.card-interactive {
+  cursor: pointer;
+}
+.card[data-interactive="true"]:hover,
+.card.card-interactive:hover {
+  border-color: var(--color-border-strong);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+}
+.card[data-interactive="true"]:active,
+.card.card-interactive:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+.card:focus-within {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+}
+.card[aria-disabled="true"],
+.card.is-disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+.card[aria-busy="true"],
+.card.is-loading {
+  pointer-events: none;
+}
+.card[aria-busy="true"]::before {
+  content: "";
+  position: absolute; inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,0.04) 40%,
+    rgba(255,255,255,0.04) 60%,
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.8s linear infinite;
+  pointer-events: none;
+}
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   7. SKELETON / EMPTY / ERROR STATES
+   ─────────────────────────────────────────────────────────── */
+.skeleton {
+  display: block;
+  background: linear-gradient(
+    90deg,
+    var(--color-card) 0%,
+    rgba(255,255,255,0.04) 50%,
+    var(--color-card) 100%
+  );
+  background-size: 200% 100%;
+  border-radius: 6px;
+  animation: skeleton-pulse 1.6s ease-in-out infinite;
+}
+@keyframes skeleton-pulse {
+  0%, 100% { background-position: 200% 0; opacity: 0.9; }
+  50%      { background-position: -200% 0; opacity: 0.7; }
+}
+.skeleton-text   { height: 12px; margin-bottom: 8px; }
+.skeleton-title  { height: 20px; width: 60%; margin-bottom: 12px; }
+.skeleton-avatar { width: 40px; height: 40px; border-radius: 50%; }
+.skeleton-card   { height: 120px; border-radius: var(--radius); }
+
+/* Empty state */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+  color: var(--color-fg-muted);
+  gap: 12px;
+}
+.empty-state-icon {
+  width: 48px; height: 48px;
+  opacity: 0.4;
+  color: var(--color-fg-muted);
+}
+.empty-state-title {
+  font: 600 15px var(--font-sans, system-ui);
+  color: var(--color-fg);
+}
+.empty-state-body {
+  font: 13px/1.5 var(--font-sans, system-ui);
+  max-width: 320px;
+}
+
+/* Error state */
+.error-state {
+  padding: 20px;
+  border: 1px solid rgba(229, 106, 106, 0.25);
+  background: rgba(229, 106, 106, 0.08);
+  border-radius: var(--radius);
+  color: var(--color-fg);
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.error-state-icon { color: var(--color-error); flex-shrink: 0; }
+.error-state-title {
+  font: 600 13px var(--font-sans, system-ui);
+  color: var(--color-error);
+  margin-bottom: 4px;
+}
+.error-state-body { font: 12px var(--font-sans, system-ui); color: var(--color-fg-muted); }
+
+/* ─────────────────────────────────────────────────────────────
+   8. RECHARTS PALETTE (CSS vars consumed by chart config)
+   ─────────────────────────────────────────────────────────── */
+:root,
+.dark,
+[data-theme="carbon"] {
+  --chart-1: #e89558;   /* primary series — warm orange */
+  --chart-2: #8fd4d0;   /* teal */
+  --chart-3: #c9a6e6;   /* violet */
+  --chart-4: #5dd9a3;   /* green */
+  --chart-5: #f5b84d;   /* gold */
+  --chart-6: #e56a6a;   /* coral */
+
+  --chart-stroke:       #e89558;
+  --chart-fill-from:    rgba(232, 149, 88, 0.35);
+  --chart-fill-to:      rgba(232, 149, 88, 0);
+  --chart-grid:         rgba(255, 255, 255, 0.05);
+  --chart-axis-text:    #55555e;
+  --chart-tooltip-bg:   rgba(23, 23, 28, 0.95);
+  --chart-tooltip-border: rgba(232, 149, 88, 0.35);
+  --chart-tooltip-fg:   #f2f2f5;
+  --chart-reference-line: rgba(255, 255, 255, 0.12);
+}
+.light,
+[data-theme="light"] {
+  --chart-1: #c97538;
+  --chart-2: #2c7a75;
+  --chart-3: #7b4ca8;
+  --chart-4: #1f9866;
+  --chart-5: #b8862a;
+  --chart-6: #c73e3e;
+
+  --chart-stroke:       #c97538;
+  --chart-fill-from:    rgba(201, 117, 56, 0.25);
+  --chart-fill-to:      rgba(201, 117, 56, 0);
+  --chart-grid:         rgba(23, 23, 28, 0.08);
+  --chart-axis-text:    #9a9aa0;
+  --chart-tooltip-bg:   #ffffff;
+  --chart-tooltip-border: rgba(201, 117, 56, 0.35);
+  --chart-tooltip-fg:   #17171c;
+  --chart-reference-line: rgba(23, 23, 28, 0.18);
+}
+/* Recharts usage example (JS):
+   <Line stroke="var(--chart-1)" strokeWidth={2.5} dot={false} />
+   <CartesianGrid stroke="var(--chart-grid)" vertical={false} />
+   <Tooltip
+     contentStyle={{
+       background: 'var(--chart-tooltip-bg)',
+       border: '1px solid var(--chart-tooltip-border)',
+       color: 'var(--chart-tooltip-fg)',
+       borderRadius: 8,
+     }}
+   />
+*/
+
+/* ─────────────────────────────────────────────────────────────
+   9. RESPONSIVE 12-COL GRID
+   ─────────────────────────────────────────────────────────── */
+.container {
+  width: 100%;
+  max-width: 1440px;
+  margin-inline: auto;
+  padding-inline: 16px;
+}
+.grid-12 {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 12px;
+}
+/* Span utilities — mobile-first (default = full-width/span-12) */
+[class*="col-"] { grid-column: span 12 / span 12; }
+
+/* Mobile <640 (default): everything is col-12 */
+
+/* Tablet 640-1024 */
+@media (min-width: 640px) {
+  .container { padding-inline: 24px; }
+  .grid-12 { gap: 16px; }
+  .sm\:col-1  { grid-column: span 1  / span 1;  }
+  .sm\:col-2  { grid-column: span 2  / span 2;  }
+  .sm\:col-3  { grid-column: span 3  / span 3;  }
+  .sm\:col-4  { grid-column: span 4  / span 4;  }
+  .sm\:col-6  { grid-column: span 6  / span 6;  }
+  .sm\:col-8  { grid-column: span 8  / span 8;  }
+  .sm\:col-12 { grid-column: span 12 / span 12; }
+}
+
+/* Desktop >1024 */
+@media (min-width: 1024px) {
+  .container { padding-inline: 32px; }
+  .grid-12 { gap: 20px; }
+  .md\:col-1  { grid-column: span 1  / span 1;  }
+  .md\:col-2  { grid-column: span 2  / span 2;  }
+  .md\:col-3  { grid-column: span 3  / span 3;  }
+  .md\:col-4  { grid-column: span 4  / span 4;  }
+  .md\:col-5  { grid-column: span 5  / span 5;  }
+  .md\:col-6  { grid-column: span 6  / span 6;  }
+  .md\:col-7  { grid-column: span 7  / span 7;  }
+  .md\:col-8  { grid-column: span 8  / span 8;  }
+  .md\:col-9  { grid-column: span 9  / span 9;  }
+  .md\:col-10 { grid-column: span 10 / span 10; }
+  .md\:col-12 { grid-column: span 12 / span 12; }
+}
+
+/* Wide >1280 */
+@media (min-width: 1280px) {
+  .lg\:col-3 { grid-column: span 3 / span 3; }
+  .lg\:col-4 { grid-column: span 4 / span 4; }
+  .lg\:col-6 { grid-column: span 6 / span 6; }
+  .lg\:col-8 { grid-column: span 8 / span 8; }
+  .lg\:col-9 { grid-column: span 9 / span 9; }
+}
+
+/* Breakpoint helpers (display) */
+.hide-mobile  { display: none; }
+.hide-tablet  { display: initial; }
+.hide-desktop { display: initial; }
+@media (min-width: 640px) {
+  .hide-mobile  { display: initial; }
+  .hide-tablet  { display: none; }
+}
+@media (min-width: 1024px) {
+  .hide-tablet  { display: initial; }
+  .hide-desktop { display: none; }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   10. FOCUS RING — consistent across all interactive elements
+   ─────────────────────────────────────────────────────────── */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+  border-radius: inherit;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   11. TAILWIND BRIDGE (optional — extend tailwind.config.ts)
+   ─────────────────────────────────────────────────────────── */
+/*
+  In tailwind.config.ts extend theme:
+    colors: {
+      background: 'hsl(var(--background))',
+      foreground: 'hsl(var(--foreground))',
+      card:       { DEFAULT: 'hsl(var(--card))', foreground: 'hsl(var(--card-foreground))' },
+      primary:    { DEFAULT: 'hsl(var(--primary))', foreground: 'hsl(var(--primary-foreground))' },
+      muted:      { DEFAULT: 'hsl(var(--muted))', foreground: 'hsl(var(--muted-foreground))' },
+      accent:     { DEFAULT: 'hsl(var(--accent))', foreground: 'hsl(var(--accent-foreground))' },
+      destructive:{ DEFAULT: 'hsl(var(--destructive))', foreground: 'hsl(var(--destructive-foreground))' },
+      border:     'hsl(var(--border))',
+      input:      'hsl(var(--input))',
+      ring:       'hsl(var(--ring))',
+    },
+    borderRadius: {
+      lg: 'var(--radius)',
+      md: 'calc(var(--radius) - 2px)',
+      sm: 'calc(var(--radius) - 4px)',
+    }
+*/

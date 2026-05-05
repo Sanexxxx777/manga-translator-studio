@@ -1,0 +1,228 @@
+/* ============================================================
+   NFA Trading Suite — App Identity Layer
+   ============================================================
+   Sits ABOVE the theme layer. Maps each product to an accent
+   hue while all products share the same neutrals + spacing.
+
+   Apply to <html> or <body>:
+     data-product="dashboard"     → warm gold  (#e89558)
+     data-product="setup-manager" → cool cyan  (#3faab8)
+     data-product="sector-map"    → violet     (#8b5fbd)
+
+   Also defines:
+   • Logo variants (full / icon / monochrome-light / monochrome-dark)
+   • Favicon set references
+   • OG image template slot
+   • App icon per product
+   ============================================================ */
+
+/* -------------------------------------------------------------
+   PRODUCT ACCENT REMAPPING
+   Neutrals + spacing stay constant; only accent flips.
+   ----------------------------------------------------------- */
+[data-product="dashboard"] {
+  --color-primary:        #e89558;
+  --color-primary-hover:  #f0a76e;
+  --color-primary-active: #c97538;
+  --color-primary-ring:   rgba(232,149,88,0.55);
+  --primary:              25 74% 63%;   /* HSL for shadcn */
+  --ring:                 25 74% 63%;
+  --chart-1:              #e89558;
+  --chart-fill-from:      rgba(232,149,88,0.35);
+  --chart-fill-to:        rgba(232,149,88,0);
+  --glow:                 0 4px 16px rgba(232,149,88,0.35);
+  --product-name:         "Dashboard";
+}
+
+[data-product="setup-manager"] {
+  --color-primary:        #3faab8;
+  --color-primary-hover:  #5bc0cc;
+  --color-primary-active: #267a85;
+  --color-primary-ring:   rgba(63,170,184,0.55);
+  --primary:              188 49% 48%;
+  --ring:                 188 49% 48%;
+  --chart-1:              #3faab8;
+  --chart-fill-from:      rgba(63,170,184,0.35);
+  --chart-fill-to:        rgba(63,170,184,0);
+  --glow:                 0 4px 16px rgba(63,170,184,0.35);
+  --product-name:         "Setup Manager";
+}
+
+[data-product="sector-map"] {
+  --color-primary:        #8b5fbd;
+  --color-primary-hover:  #a67dce;
+  --color-primary-active: #5f3e86;
+  --color-primary-ring:   rgba(139,95,189,0.55);
+  --primary:              270 41% 55%;
+  --ring:                 270 41% 55%;
+  --chart-1:              #8b5fbd;
+  --chart-fill-from:      rgba(139,95,189,0.35);
+  --chart-fill-to:        rgba(139,95,189,0);
+  --glow:                 0 4px 16px rgba(139,95,189,0.35);
+  --product-name:         "Sector Map";
+}
+
+/* -------------------------------------------------------------
+   LOGO VARIANTS
+   <img class="nfa-logo nfa-logo--full"   src="..." />
+   <img class="nfa-logo nfa-logo--icon"   src="..." />
+   <img class="nfa-logo nfa-logo--mono-light" src="..." />  (on dark bg)
+   <img class="nfa-logo nfa-logo--mono-dark"  src="..." />  (on light bg)
+   ----------------------------------------------------------- */
+.nfa-logo { display: inline-block; height: 28px; width: auto; vertical-align: middle; }
+.nfa-logo--full  { height: 28px; }
+.nfa-logo--icon  { height: 24px; width: 24px; }
+.nfa-logo--sm    { height: 20px; }
+.nfa-logo--lg    { height: 40px; }
+.nfa-logo--mono-light { filter: brightness(0) invert(1); opacity: 0.95; }
+.nfa-logo--mono-dark  { filter: brightness(0); opacity: 0.85; }
+
+/* -------------------------------------------------------------
+   APP ICON — per-product mark with shared silhouette
+   Rendered inline via CSS mask + product accent fill.
+   ----------------------------------------------------------- */
+.app-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  background: var(--color-primary);
+  color: #0b0b0f;
+  font: 700 11px/1 var(--font-sans, system-ui);
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+.app-icon--sm { width: 24px; height: 24px; border-radius: 6px; font-size: 9px; }
+.app-icon--lg { width: 48px; height: 48px; border-radius: 12px; font-size: 16px; }
+.app-icon::after {
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.18), transparent 60%);
+  pointer-events: none;
+}
+
+/* -------------------------------------------------------------
+   FAVICON + OG IMAGE references
+   Place these in your <head>:
+
+   <link rel="icon"           href="/favicon.ico">
+   <link rel="icon" sizes="16x16"  href="/favicon-16.png">
+   <link rel="icon" sizes="32x32"  href="/favicon-32.png">
+   <link rel="apple-touch-icon"    href="/apple-touch-icon.png">  (180×180)
+   <link rel="mask-icon" color="#e89558" href="/safari-pinned.svg">
+   <meta property="og:image"  content="/og-image.png"> (1200×630)
+   <meta name="theme-color"   content="#0e0e12">
+
+   Per-product favicon override: symlink /favicon.ico to the
+   appropriate app-icon-{product}.ico file at build time.
+   ----------------------------------------------------------- */
+
+/* -------------------------------------------------------------
+   APP SWITCHER COMPONENT
+   ----------------------------------------------------------- */
+.app-switcher {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px 6px 8px;
+  background: var(--color-card, #17171c);
+  border: 1px solid var(--color-border, rgba(255,255,255,0.08));
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 180ms cubic-bezier(0.4, 0, 0.2, 1);
+  color: var(--color-fg, #f2f2f5);
+  font: 500 13px var(--font-sans, system-ui);
+}
+.app-switcher:hover { border-color: var(--color-border-strong, rgba(255,255,255,0.16)); }
+.app-switcher:focus-visible { outline: 2px solid var(--color-primary-ring); outline-offset: 2px; }
+.app-switcher__caret { width: 12px; height: 12px; color: var(--color-fg-muted, #8a8a94); }
+
+.app-switcher__menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  min-width: 280px;
+  padding: 8px;
+  background: var(--color-card, #17171c);
+  border: 1px solid var(--color-border-strong, rgba(255,255,255,0.12));
+  border-radius: 12px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  z-index: 100;
+}
+.app-switcher__item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  color: var(--color-fg, #f2f2f5);
+  font: 500 13px var(--font-sans, system-ui);
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  text-align: left;
+  transition: background 120ms;
+}
+.app-switcher__item:hover { background: rgba(255,255,255,0.04); }
+.app-switcher__item[aria-current="true"] { background: rgba(255,255,255,0.06); }
+.app-switcher__item-meta { display: flex; flex-direction: column; gap: 2px; }
+.app-switcher__item-name { font-weight: 600; }
+.app-switcher__item-desc { font-size: 11px; color: var(--color-fg-muted, #8a8a94); }
+
+/* -------------------------------------------------------------
+   SHARED TOP BAR
+   ----------------------------------------------------------- */
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  height: 56px;
+  padding: 0 20px;
+  background: var(--color-card, #17171c);
+  border-bottom: 1px solid var(--color-border, rgba(255,255,255,0.06));
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+.topbar__brand { display: inline-flex; align-items: center; gap: 10px; }
+.topbar__divider {
+  width: 1px; height: 22px;
+  background: var(--color-border-strong, rgba(255,255,255,0.12));
+  margin: 0 4px;
+}
+.topbar__breadcrumb { flex: 1; min-width: 0; }
+.topbar__actions { display: flex; align-items: center; gap: 8px; }
+
+/* -------------------------------------------------------------
+   BREADCRUMB (convention: Product › Section › Page)
+   ----------------------------------------------------------- */
+.crumb-trail {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font: 500 13px var(--font-sans, system-ui);
+  color: var(--color-fg-muted, #8a8a94);
+  overflow: hidden;
+  white-space: nowrap;
+}
+.crumb-trail__item {
+  color: var(--color-fg-muted, #8a8a94);
+  text-decoration: none;
+  transition: color 120ms;
+}
+.crumb-trail__item:hover { color: var(--color-fg, #f2f2f5); }
+.crumb-trail__item--current {
+  color: var(--color-fg, #f2f2f5);
+  font-weight: 600;
+}
+.crumb-trail__sep {
+  color: var(--color-fg-subtle, #55555e);
+  font-size: 11px;
+  user-select: none;
+}

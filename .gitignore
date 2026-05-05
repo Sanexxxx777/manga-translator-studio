@@ -1,0 +1,34 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# Node
+node_modules/
+
+# Secrets
+.env
+
+# Runtime artifacts
+.mit_runtime_config.json
+cache.db
+data/jobs.json
+
+# Pipeline outputs and cached chapters
+input/
+output/
+Manga/
+
+# manga-image-translator clone (vendored separately)
+manga-image-translator/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors / Claude Code state
+.claude/
+CLAUDE.md
+.vscode/
+.idea/

@@ -1,0 +1,462 @@
+/* ============================================================
+   Manga Translation Studio — base styles.
+   Поверх грузится design-system-overlay.css (Liquid Glass + Geist + Playfair).
+   ============================================================ */
+
+:root {
+  --radius-card: 18px;
+  --radius-input: 12px;
+  --radius-pill: 999px;
+  --pad-card: 24px;
+  --gap-card: 20px;
+  --color-text: #e8e8ea;
+  --color-text-dim: rgba(232, 232, 234, 0.62);
+  --color-text-mute: rgba(232, 232, 234, 0.42);
+  --color-line: rgba(255, 255, 255, 0.08);
+  --color-line-strong: rgba(255, 255, 255, 0.16);
+  --color-bg-card: rgba(20, 20, 30, 0.55);
+  --color-bg-input: rgba(0, 0, 0, 0.32);
+  --color-bg-log: rgba(0, 0, 0, 0.45);
+  --color-accent: #f5b486;
+  --color-accent-cool: #8fd4d0;
+  --color-success: #b4e28d;
+  --color-warning: #f2c879;
+  --color-error: #f08d8d;
+  --shadow-card: 0 1px 0 rgba(255,255,255,0.04) inset, 0 18px 60px -28px rgba(0,0,0,0.75);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; min-height: 100vh; color: var(--color-text); }
+/* overlay из crypto-dashboard ставит body { background:#0a0a14 !important }
+   и при коротком контенте получаем чёрную «полосу» поверх градиента ::before.
+   Фон оставляем только на html, body — прозрачный, тогда ::before/::after видны. */
+html { background: #0a0a14 !important; }
+body {
+  background: transparent !important;
+  font-feature-settings: "ss01", "cv11";
+  font-size: 15px;            /* базовый чуть крупнее, чем дефолтный 16/13 — читать легче */
+  overflow-x: hidden;          /* подстраховка: ничто не должно горизонтально вылезать */
+}
+a { color: var(--color-accent-cool); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code, pre, .mono { font-family: var(--nfa-font-mono, 'Geist Mono', monospace); font-size: 0.92em; }
+
+/* ── корневой контейнер — адаптивный ──────────────────
+   На обычных мониторах max-width 1180 давал слишком узкую колонку
+   (16" Mac = ~1700px logical; контент почти теряется). Теперь:
+   - до 1180px ширины: контент прижат к 100% (как было)
+   - выше: тянемся до 1600px, оставляя место под плавающую карточку слева
+   - calc(100vw - 360px) гарантирует что контент не перекроет соседей слева
+*/
+.app {
+  width: 100%;
+  max-width: min(1600px, calc(100vw - 80px));
+  margin: 0 auto;
+  padding: 28px 32px 80px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-card);
+}
+@media (min-width: 1200px) {
+  /* На широких экранах сдвигаем контент чуть вправо чтобы дать место
+     плавающей карточке «Соседи по NFA» (она fixed left: 20px, width: 280px). */
+  .app { padding-left: 340px; padding-right: 32px; max-width: min(1600px, 100vw - 32px); }
+}
+@media (min-width: 1700px) {
+  .app { padding-left: 360px; padding-right: 60px; }
+}
+
+/* ── topbar ─────────────────────────────────────────── */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  padding-bottom: 8px;
+}
+.brand { display: flex; align-items: center; gap: 16px; }
+.brand-mark {
+  width: 56px; height: 56px;
+  display: grid; place-items: center;
+  background: linear-gradient(135deg, rgba(245,180,134,0.18), rgba(143,212,208,0.18));
+  border: 1px solid var(--color-line-strong);
+  border-radius: 14px;
+  color: var(--color-accent);
+}
+.brand-mark svg { display: block; }
+.primary-btn, .ghost-btn { display: inline-flex; align-items: center; gap: 8px; }
+.brand-text h1 { margin: 0 0 2px; font-size: 28px; }
+.brand-sub { color: var(--color-text-dim); font-size: 14px; letter-spacing: 0.01em; }
+
+/* ── pills ──────────────────────────────────────────── */
+.pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 12px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--color-line-strong);
+  font-size: 12px; font-family: var(--nfa-font-mono, 'Geist Mono', monospace);
+  text-transform: lowercase; letter-spacing: 0.02em;
+  background: rgba(0,0,0,0.25);
+}
+.pill-idle    { color: var(--color-text-dim); }
+.pill-info    { color: var(--color-accent-cool); border-color: rgba(143,212,208,0.35); }
+.pill-running { color: var(--color-warning);    border-color: rgba(242,200,121,0.35); animation: pulse 1.6s ease-in-out infinite; }
+.pill-done    { color: var(--color-success);    border-color: rgba(180,226,141,0.35); }
+.pill-failed  { color: var(--color-error);      border-color: rgba(240,141,141,0.35); }
+
+@keyframes pulse {
+  0%,100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+
+/* ── cards ──────────────────────────────────────────── */
+.card {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-card);
+  padding: var(--pad-card);
+  backdrop-filter: blur(18px) saturate(115%);
+  -webkit-backdrop-filter: blur(18px) saturate(115%);
+  box-shadow: var(--shadow-card);
+}
+.card-head {
+  display: flex; align-items: flex-start; gap: 14px;
+  margin-bottom: 18px;
+}
+.card-head h2 { margin: 0 0 4px; font-size: 20px; font-weight: 500; }
+.card-head .muted { margin: 0; color: var(--color-text-dim); font-size: 14px; }
+
+.step-num {
+  flex: 0 0 auto;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  display: grid; place-items: center;
+  font-family: var(--nfa-font-mono, 'Geist Mono', monospace);
+  font-size: 13px; color: var(--color-accent);
+  background: rgba(245,180,134,0.12);
+  border: 1px solid rgba(245,180,134,0.4);
+}
+
+/* ── input ──────────────────────────────────────────── */
+.input-row {
+  display: flex; gap: 10px; align-items: stretch;
+}
+#url-input {
+  flex: 1;
+  padding: 14px 16px;
+  background: var(--color-bg-input);
+  border: 1px solid var(--color-line-strong);
+  color: var(--color-text);
+  border-radius: var(--radius-input);
+  font-family: var(--nfa-font-mono, 'Geist Mono', monospace);
+  font-size: 14px;
+  transition: border-color 120ms;
+  min-width: 0;
+}
+#url-input:focus {
+  outline: none;
+  border-color: var(--color-accent-cool);
+  box-shadow: 0 0 0 3px rgba(143,212,208,0.12);
+}
+.input-hint { margin-top: 12px; font-size: 13px; }
+
+button, .primary-btn, .ghost-btn {
+  font-family: inherit; font-size: 14px;
+  border-radius: var(--radius-input);
+  cursor: pointer;
+  border: none;
+  padding: 12px 22px;
+  transition: transform 80ms, opacity 120ms, background 160ms, border-color 160ms;
+  white-space: nowrap;
+}
+#run-btn, .primary-btn {
+  background: linear-gradient(135deg, #f5b486 0%, #c9a6e6 50%, #8fd4d0 100%);
+  color: #1a1525;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+#run-btn:hover, .primary-btn:hover { transform: translateY(-1px); }
+#run-btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+
+.ghost-btn {
+  background: transparent;
+  color: var(--color-text-dim);
+  border: 1px solid var(--color-line-strong);
+  padding: 10px 14px;
+  font-size: 12px;
+}
+.ghost-btn:hover { color: var(--color-text); border-color: var(--color-line-strong); background: rgba(255,255,255,0.04); }
+
+/* ── progress: split layout ─────────────────────────── */
+.progress-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  min-height: 360px;
+}
+@media (max-width: 900px) {
+  .progress-grid { grid-template-columns: 1fr; }
+}
+.pages-pane, .logs-pane {
+  background: var(--color-bg-input);
+  border: 1px solid var(--color-line);
+  border-radius: 14px;
+  padding: 14px;
+  display: flex; flex-direction: column;
+  min-height: 360px;
+}
+.pane-head {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 12px;
+}
+.pane-head h3 { margin: 0; font-size: 14px; font-weight: 500; color: var(--color-text-dim); text-transform: uppercase; letter-spacing: 0.06em; }
+.pane-empty {
+  color: var(--color-text-mute); font-size: 14px;
+  flex: 1; display: grid; place-items: center;
+  border: 1px dashed var(--color-line);
+  border-radius: 10px;
+}
+
+.pages-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 10px;
+  align-content: start;
+  overflow-y: auto;
+  max-height: 520px;
+  padding: 4px;
+}
+.pages-grid:empty + .pane-empty { display: grid; }
+.page-thumb {
+  position: relative;
+  aspect-ratio: 3/4;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--color-line);
+  background: rgba(0,0,0,0.35);
+  cursor: zoom-in;
+  transition: transform 100ms, border-color 100ms;
+}
+.page-thumb:hover { transform: translateY(-2px); border-color: var(--color-line-strong); }
+.page-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.page-thumb .page-num {
+  position: absolute; left: 6px; bottom: 6px;
+  font-family: var(--nfa-font-mono, monospace); font-size: 10px;
+  background: rgba(0,0,0,0.7); color: #fff;
+  padding: 2px 6px; border-radius: 4px;
+}
+
+.log-stream {
+  margin: 0;
+  flex: 1;
+  overflow-y: auto;
+  max-height: 520px;
+  background: var(--color-bg-log);
+  border: 1px solid var(--color-line);
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-family: var(--nfa-font-mono, 'Geist Mono', monospace);
+  font-size: 12px; line-height: 1.55;
+  color: rgba(255,255,255,0.78);
+  white-space: pre-wrap; word-break: break-word;
+  scrollbar-width: thin;
+}
+.log-stream .log-info  { color: rgba(255,255,255,0.85); }
+.log-stream .log-warn  { color: var(--color-warning); }
+.log-stream .log-error { color: var(--color-error); }
+.log-stream .log-meta  { color: var(--color-accent-cool); }
+
+/* ── result bar ─────────────────────────────────────── */
+.result-bar {
+  margin-top: 18px;
+  display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(180,226,141,0.3);
+  background: linear-gradient(135deg, rgba(180,226,141,0.08), rgba(143,212,208,0.06));
+}
+.result-summary { color: var(--color-text); font-size: 14px; flex: 1; }
+.result-summary strong { color: var(--color-success); }
+
+/* ── history ────────────────────────────────────────── */
+.history-list { display: flex; flex-direction: column; gap: 8px; }
+.history-item { display: flex; flex-direction: column; }
+.history-row {
+  display: grid;
+  grid-template-columns: 110px minmax(200px, 1fr) auto auto auto;
+  gap: 14px;
+  align-items: center;
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1px solid var(--color-line);
+  background: rgba(0,0,0,0.22);
+  font-size: 13px;
+  transition: border-color 120ms, background 120ms;
+}
+.history-row:hover { border-color: var(--color-line-strong); background: rgba(0,0,0,0.32); }
+.history-row.clickable { cursor: pointer; }
+.history-row.clickable:hover { border-color: rgba(143,212,208,0.35); }
+.history-row .hr-time { font-family: var(--nfa-font-mono, monospace); font-size: 13px; color: var(--color-text-dim); }
+.history-row .hr-title {
+  color: var(--color-text);
+  font-weight: 500;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  display: flex; align-items: baseline; gap: 10px;
+  min-width: 0;
+}
+.history-row .hr-id-mono {
+  font-family: var(--nfa-font-mono, monospace); font-size: 12px;
+  color: var(--color-text-mute);
+}
+.history-row .hr-stat .pill { font-size: 12px; padding: 4px 10px; }
+.history-row .hr-pages { color: var(--color-text-dim); font-size: 13px; white-space: nowrap; }
+.history-row .hr-actions { display: flex; gap: 6px; justify-content: flex-end; }
+.history-row .hr-actions a { font-size: 12px; padding: 6px 11px; }
+
+.history-expander {
+  max-height: 0; overflow: hidden;
+  transition: max-height 220ms ease-in-out, margin 220ms;
+}
+.history-expander.open {
+  max-height: 1200px;
+  margin-top: 8px;
+}
+.history-thumbs {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: 8px;
+  padding: 12px;
+  background: rgba(0,0,0,0.28);
+  border: 1px solid var(--color-line);
+  border-radius: 10px;
+}
+
+.small { font-size: 13px; }
+.muted { color: var(--color-text-dim); }
+
+/* ── readers-card ───────────────────────────────────── */
+.readers-card { padding: 18px 24px; }
+.readers-card summary {
+  cursor: pointer; font-weight: 500; padding: 4px 0;
+  color: var(--color-text);
+  list-style: none;
+}
+.readers-card summary {
+  display: flex; align-items: center; gap: 10px;
+}
+.readers-card summary::-webkit-details-marker { display: none; }
+.readers-card summary::before {
+  content: "";
+  width: 0; height: 0;
+  border-left: 6px solid var(--color-accent);
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  transition: transform 120ms;
+}
+.readers-card[open] summary::before { transform: rotate(90deg); }
+.readers-list { padding-left: 22px; line-height: 1.7; color: var(--color-text-dim); }
+.readers-list strong { color: var(--color-text); }
+.readers-list code {
+  background: var(--color-bg-input);
+  border: 1px solid var(--color-line);
+  padding: 2px 7px; border-radius: 6px; color: var(--color-accent-cool);
+}
+
+/* ── neighbours: плавающая карточка слева внизу ─────── */
+/* Без фона (виден градиент страницы), золотая обводка с лёгким свечением. */
+.neighbours-floating {
+  position: fixed;
+  left: 20px;
+  bottom: 20px;
+  z-index: 30;
+  width: 280px;
+  padding: 14px 16px;
+  background: transparent;            /* фоном выступает общий градиент страницы */
+  border: 1px solid rgba(245, 180, 134, 0.55);  /* золотая обводка из NFA accent */
+  border-radius: 14px;
+  box-shadow:
+    0 0 0 1px rgba(245, 180, 134, 0.06),
+    0 0 18px -6px rgba(245, 180, 134, 0.35),
+    0 12px 32px -16px rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(6px) saturate(115%);
+  -webkit-backdrop-filter: blur(6px) saturate(115%);
+  display: flex; flex-direction: column; gap: 10px;
+  transition: border-color 160ms, box-shadow 160ms;
+}
+.neighbours-floating:hover {
+  border-color: rgba(245, 180, 134, 0.85);
+  box-shadow:
+    0 0 0 1px rgba(245, 180, 134, 0.10),
+    0 0 24px -4px rgba(245, 180, 134, 0.55),
+    0 12px 32px -14px rgba(0, 0, 0, 0.7);
+}
+.neighbours-floating .nf-head {
+  display: flex; flex-direction: column; gap: 2px;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed rgba(245, 180, 134, 0.22);
+}
+.neighbours-floating .nf-title {
+  font-family: var(--nfa-font-mono, monospace);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+.neighbours-floating .nf-sub {
+  font-size: 10px;
+  color: var(--color-text-mute);
+  font-family: var(--nfa-font-mono, monospace);
+  letter-spacing: 0.05em;
+}
+.neighbours-floating .nf-list {
+  list-style: none; margin: 0; padding: 0;
+  display: flex; flex-direction: column; gap: 2px;
+}
+.neighbours-floating .nf-list a {
+  display: flex; flex-direction: column; gap: 1px;
+  padding: 7px 9px;
+  border-radius: 7px;
+  text-decoration: none;
+  transition: background 120ms, transform 80ms;
+}
+.neighbours-floating .nf-list a:hover {
+  background: rgba(245, 180, 134, 0.08);
+  text-decoration: none;
+  transform: translateX(2px);
+}
+.neighbours-floating .nb-name {
+  color: var(--color-text);
+  font-size: 14px;
+  font-weight: 500;
+}
+.neighbours-floating .nb-desc {
+  color: var(--color-text-dim);
+  font-size: 12px;
+}
+/* особый стиль для строки "связь с автором" — отделить чертой сверху */
+.neighbours-floating .nf-contact {
+  margin-top: 4px;
+  padding-top: 9px !important;
+  border-top: 1px dashed rgba(245, 180, 134, 0.18);
+  border-radius: 0 0 7px 7px !important;
+}
+.neighbours-floating .nf-contact .nb-name {
+  color: var(--color-accent);
+}
+/* мелкие экраны — прячем чтобы не конфликтовать с layout */
+@media (max-width: 720px) {
+  .neighbours-floating { display: none; }
+}
+
+/* ── lightbox ───────────────────────────────────────── */
+.lightbox {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.92);
+  display: none;
+  align-items: center; justify-content: center;
+  z-index: 100;
+  cursor: zoom-out;
+  padding: 20px;
+}
+.lightbox.open { display: flex; }
+.lightbox img { max-width: 100%; max-height: 100%; box-shadow: 0 0 60px rgba(0,0,0,0.8); }
