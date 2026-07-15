@@ -1,8 +1,10 @@
 # Manga Translation Studio
 
+By [Aleksandr Shulgin](https://github.com/Sanexxxx777).
+
 A local pipeline that takes a MangaDex chapter URL, translates the text into your target language with Google Gemini, and packages the result as a `.cbz` archive. Includes a small Express-based web UI for one-click runs and live progress.
 
-The translation backend is built on top of [`manga-image-translator`](https://github.com/zyddnys/manga-image-translator) (MIT) for OCR, mask detection and inpainting; Gemini does the language work with a domain-specific system prompt and a SQLite cache so re-runs are nearly free.
+Everything in this repo — the pipeline, the Gemini translator, the SQLite cache, the SSH/WARP tunnel, the web UI — is my own code. The heavy lifting for OCR, text detection and inpainting comes from [`manga-image-translator`](https://github.com/zyddnys/manga-image-translator) (MIT, by zyddnys) — it's a separate project you clone alongside this one (see Setup below), not vendored or claimed as mine. Gemini does the language work on top of it, with a domain-specific system prompt and a SQLite cache so re-runs are nearly free.
 
 ## Why it exists
 
