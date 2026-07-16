@@ -1,6 +1,6 @@
 # Manga Translation Studio
 
-By [Aleksandr Shulgin](https://github.com/Sanexxxx777).
+By [Aleksandr Shulgin](https://github.com/Sanexxxx777) ([@Aleksandr_NFA](https://t.me/Aleksandr_NFA)).
 
 A local pipeline that takes a MangaDex chapter URL, translates the text into your target language with Google Gemini, and packages the result as a `.cbz` archive. Includes a small Express-based web UI for one-click runs and live progress.
 
