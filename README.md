@@ -1,6 +1,12 @@
 # Manga Translation Studio
 
+<!-- TODO: demo GIF (20-40s) -->
+
 By [Aleksandr Shulgin](https://github.com/Sanexxxx777) ([@Aleksandr_NFA](https://t.me/Aleksandr_NFA)).
+
+> **Copyright note:** manga chapters are fetched from MangaDex and translated for personal use.
+> The underlying content stays under its original publisher's copyright — this tool is not for
+> redistributing or publishing translated chapters commercially. Use at your own risk.
 
 A local pipeline that takes a MangaDex chapter URL, translates the text into your target language with Google Gemini, and packages the result as a `.cbz` archive. Includes a small Express-based web UI for one-click runs and live progress.
 
@@ -153,3 +159,16 @@ MIT — see [LICENSE](LICENSE).
 `manga-image-translator` is a separate project under its own license; clone it independently.
 
 PT Sans Narrow is © ParaType, distributed under the SIL Open Font License 1.1.
+
+---
+
+## На русском (кратко)
+
+Локальный пайплайн: ссылка на главу MangaDex → перевод текста через Google Gemini → сборка
+`.cbz`. Есть небольшой веб-интерфейс (Express + SSE) для запуска в один клик с живым прогрессом.
+Собственный код — пайплайн, Gemini-переводчик, SQLite-кэш, SSH/WARP-туннель, веб-UI; OCR,
+детекция текста и инпейнтинг — на [`manga-image-translator`](https://github.com/zyddnys/manga-image-translator)
+(MIT, клонируется отдельно рядом с этим репо). Требует Python 3.11+, Node.js 18+, ключ Google AI
+Studio (Gemini) и, при геоблоке/троттлинге, SSH-доступ к машине с Cloudflare WARP в режиме proxy.
+Использовать только для личных целей — авторские права на контент MangaDex сохраняются за
+издателем, инструмент не для коммерческого распространения переводов.
